@@ -48,9 +48,10 @@ class _SSCartFragmentState extends State<SSCartFragment> {
                     ],
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        cartItem.product.img ?? '',
+                      Image.network(
+                        cartItem.product.image ?? '',
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,
@@ -69,38 +70,42 @@ class _SSCartFragmentState extends State<SSCartFragment> {
                           ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.remove),
-                            onPressed: () {
-                              setState(() {
-                                if (cartItem.quantity > 1) {
-                                  cartItem.quantity--;
-                                } else {
-                                  widget.cartItems.removeAt(index);
-                                }
-                              });
-                            },
+                      Flexible(
+                        child: FittedBox(
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.remove),
+                                onPressed: () {
+                                  setState(() {
+                                    if (cartItem.quantity > 1) {
+                                      cartItem.quantity--;
+                                    } else {
+                                      widget.cartItems.removeAt(index);
+                                    }
+                                  });
+                                },
+                              ),
+                              Text('${cartItem.quantity}'),
+                              IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  setState(() {
+                                    cartItem.quantity++;
+                                  });
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  setState(() {
+                                    widget.cartItems.removeAt(index);
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                          Text('${cartItem.quantity}'),
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              setState(() {
-                                cartItem.quantity++;
-                              });
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {
-                              setState(() {
-                                widget.cartItems.removeAt(index);
-                              });
-                            },
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -129,7 +134,8 @@ class _SSCartFragmentState extends State<SSCartFragment> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${widget.cartItems.length} items', style: secondaryTextStyle()),
+                Text('${widget.cartItems.length} items',
+                    style: secondaryTextStyle()),
                 Text(
                   'Rp${widget.cartItems.fold<double>(0, (total, item) => total + (item.product.price ?? 0) * item.quantity)}',
                   style: boldTextStyle(),

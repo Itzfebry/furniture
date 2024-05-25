@@ -48,14 +48,14 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
                 color: appStore.isDarkModeOn ? Colors.white : Colors.black,
                 fit: BoxFit.cover,
               ),
-              SizedBox(width: 8), // Memberikan jarak antara logo dan teks
+              SizedBox(width: 8), 
               Text('CheapyId',
                   style: GoogleFonts.poppins(
                       color:
                           appStore.isDarkModeOn ? Colors.white : Colors.black,
                       fontSize: 28,
                       fontWeight: FontWeight.w600
-                      // Sesuaikan ukuran teks sesuai kebutuhan
+                     
                       )),
             ],
           ),
@@ -100,7 +100,7 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
                           height: 250,
                           width: MediaQuery.of(context).size.width,
                           fit: BoxFit.cover,
-                        ), // penutup Image
+                        ), 
                         Positioned(
                           bottom: 16,
                           left: 100,
@@ -110,14 +110,14 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
                                   color: Colors.white,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w400
-                                  // Sesuaikan ukuran teks sesuai kebutuhan
-                                  )), // penutup Text
-                        ), // penutup Positioned
-                      ], // penutup Stack children
-                    ), // penutup Stack
-                  ), // penutup ClipRRect
-                ), // penutup Container
-              ), // penutup Padding (mobile)
+                                 
+                                  )), 
+                        ), 
+                      ], 
+                    ), 
+                  ), 
+                ), 
+              ), 
             ),
             SizedBox(height: 16),
             Padding(

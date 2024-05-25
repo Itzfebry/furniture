@@ -111,14 +111,6 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                             index = img.indexOf(e);
                           });
 
-                          // SSDetailScreen(img: list[index].img, name: list[index].name).launch(context);
-
-//                          Navigator.push(
-//   context,
-//   MaterialPageRoute(
-//     builder: (context) => SSDetailScreen(img: img[index], name: widget.list[index].name),
-//   ),
-// );
                         },
                         child: Container(
                           margin: EdgeInsets.only(right: 8),

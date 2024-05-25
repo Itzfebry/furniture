@@ -1,4 +1,3 @@
-// cart_item.dart
 import 'package:furniture/model/product.dart';
 
 class CartItem {

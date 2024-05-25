@@ -1,12 +1,13 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:furniture/model/product.dart';
-import 'package:furniture/utils/SSDataGenerator.dart';
 import 'package:furniture/model/cart_item.dart';
 
 class SSProductFragment extends StatefulWidget {
   final List<CartItem> cartItems;
-  final VoidCallback onCartUpdated;
+  final Function() onCartUpdated;
 
   SSProductFragment({required this.cartItems, required this.onCartUpdated});
 
@@ -15,22 +16,32 @@ class SSProductFragment extends StatefulWidget {
 }
 
 class _SSProductFragmentState extends State<SSProductFragment> {
-  final List<Product> list = getProduct();
+  late List<Product> productList = [];
 
-  void _addToCart(Product product) {
-    setState(() {
-      final existingItem = widget.cartItems.firstWhere(
-        (item) => item.product == product,
-        orElse: () => CartItem(product: product),
-      );
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
 
-      if (widget.cartItems.contains(existingItem)) {
-        existingItem.quantity++;
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'https://66505daeec9b4a4a6031c7b3.mockapi.io/api/furniture/cheapyid/product'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = jsonDecode(response.body);
+
+        setState(() {
+          productList = jsonData.map((item) => Product.fromJson(item)).toList();
+          print('Jumlah produk: ${productList.length}');
+        });
       } else {
-        widget.cartItems.add(existingItem);
+        throw Exception('Failed to load products');
       }
-      widget.onCartUpdated(); // Panggil callback untuk memperbarui UI di Dashboard
-    });
+    } catch (e) {
+      print('Error fetching products: $e');
+    }
   }
 
   @override
@@ -47,7 +58,7 @@ class _SSProductFragmentState extends State<SSProductFragment> {
         title: Text("Product", style: boldTextStyle()),
       ),
       body: ListView.builder(
-        itemCount: list.length,
+        itemCount: productList.length,
         itemBuilder: (context, index) {
           return Container(
             margin: EdgeInsets.all(8),
@@ -70,8 +81,8 @@ class _SSProductFragmentState extends State<SSProductFragment> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      list[index].img ?? '',
+                    Image.network(
+                      productList[index].image ?? '',
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
@@ -82,12 +93,12 @@ class _SSProductFragmentState extends State<SSProductFragment> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            list[index].name ?? '',
+                            productList[index].name ?? '',
                             style: boldTextStyle(size: 18),
                           ),
                           SizedBox(height: 8),
-                          Text('Price: ${list[index].price}'),
-                          Text('Description: ${list[index].desc}'),
+                          Text('Price: ${productList[index].price}'),
+                          Text('Description: Begeddel'),
                         ],
                       ),
                     ),
@@ -99,10 +110,15 @@ class _SSProductFragmentState extends State<SSProductFragment> {
                     Spacer(),
                     InkWell(
                       onTap: () {
-                        _addToCart(list[index]);
+                        // Menambahkan produk ke keranjang belanja
+                        widget.cartItems
+                            .add(CartItem(product: productList[index]));
+                        // Memanggil fungsi untuk memperbarui UI
+                        widget.onCartUpdated();
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(8),

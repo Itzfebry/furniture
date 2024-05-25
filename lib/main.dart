@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     return Observer(
       builder: (_) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Sneaker Shopping${!isMobile ? ' ${platformName()}' : ''}',
+        title: 'Furniture Shop${!isMobile ? ' ${platformName()}' : ''}',
         home: SSSplashScreen(),
         theme: !appStore.isDarkModeOn
             ? AppThemeData.lightTheme

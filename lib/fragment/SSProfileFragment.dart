@@ -1,9 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:furniture/model/profile.dart';
 import 'package:furniture/main.dart';
+import 'package:furniture/model/profile.dart';
 import 'package:furniture/utils/SSColors.dart';
-import 'package:furniture/utils/SSDataGenerator.dart';
+import 'package:http/http.dart' as http;
+import 'package:nb_utils/nb_utils.dart';
 
 class SSProfileFragment extends StatefulWidget {
   @override
@@ -11,12 +12,30 @@ class SSProfileFragment extends StatefulWidget {
 }
 
 class _SSProfileFragmentState extends State<SSProfileFragment> {
-  late Profile profile;
+  late Profile profile = Profile();
 
   @override
   void initState() {
     super.initState();
-    profile = getProfile().first; // Ambil data profile pertama dari getProfile()
+    fetchProfile();
+  }
+
+  Future<void> fetchProfile() async {
+    final response = await http.get(Uri.parse(
+        'https://66505daeec9b4a4a6031c7b3.mockapi.io/api/furniture/cheapyid/user/2'));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      print(jsonData);
+
+      setState(() {
+        profile = Profile.fromJson(jsonData);
+
+        print(profile);
+      });
+    } else {
+      throw Exception('Failed to load profile');
+    }
   }
 
   @override
@@ -53,16 +72,17 @@ class _SSProfileFragmentState extends State<SSProfileFragment> {
               ],
             ),
             SizedBox(height: 16, width: 16),
-            buildProfileRow('',profile.name ??''),
-            SizedBox(height: 32), // Tambahkan jarak antara gambar profil dan informasi
-
-
+            buildProfileRow('', profile.name ?? ''),
+            SizedBox(
+                height:
+                    32), // Tambahkan jarak antara gambar profil dan informasi
 
             buildProfileRow("Alamat", profile.alamat ?? 'N/A'),
             SizedBox(height: 16),
 
             // No Hp
-            buildProfileRow("No Hp", profile.nohp?.toString() ?? 'N/A'), // Konversi int ke String
+            buildProfileRow("No Hp",
+                profile.nohp?.toString() ?? 'N/A'), // Konversi int ke String
             SizedBox(height: 16),
 
             // Email
